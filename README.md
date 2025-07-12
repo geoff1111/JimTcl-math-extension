@@ -86,10 +86,10 @@ To create functions in apex:
 ```tcl
 # Define factorial function in bc
 apex {
-define fact(n) {
-  if (n <= 1) return 1
-  return n * fact(n - 1)
-}
+  define fact(n) {
+    if (n <= 1) return 1
+    return n * fact(n - 1)
+  }
 }
 
 # Call the function with some example inputs
