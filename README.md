@@ -8,8 +8,8 @@ It allows developers to evaluate numeric expressions—including floating-point 
 
 ## Features
 
-- Arbitrary precision floating-point and integer arithmetic
-- Communication with `bc` through bidirectional pipes
+- Arbitrary precision floating-point and integer arithmetic using bc syntax (C-like syntax, similar to JimTcl expr syntax)
+- Communication with `bc` through three non-blocking unidirectional pipes for stdin, stdout and stderr.
 - Clean integration with JimTcl as a `apex` command
 - Auto-trims output and handles errors
 - Reusable subprocess; minimal process overhead
@@ -78,6 +78,26 @@ To force integer math (i.e., truncate decimals), set scale=0:
 ```tcl
 puts [apex {scale=0; 5 / 2}]
 # Output: 2
+```
+
+Functions
+To create functions in apex:
+
+```tcl
+# Define factorial function in bc
+apex {
+define fact(n) {
+  if (n <= 1) return 1
+  return n * fact(n - 1)
+}
+}
+
+# Call the function with some example inputs
+puts "20! = [apex {scale = 1000; fact(20)}]"
+puts "40! = [apex {fact(40)}]"
+
+# Output: 2433902008176640000
+# Output: 815915283247897734345611269596115894272000000000
 ```
 
 Closing the Subprocess
