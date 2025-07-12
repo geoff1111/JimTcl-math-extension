@@ -125,7 +125,7 @@ puts [apex {5 + }]
 ## Internals
 A single persistent bc subprocess is launched upon the first use.
 
-Data is sent to bc via a pipe; results are read asynchronously until a sentinel (@) is detected.
+Data is sent to bc via a pipe; results are read (pipe is nonblocking) until a sentinel (@) is detected.
 
 On failure or apex close, the subprocess and pipes are closed and cleaned.
 
