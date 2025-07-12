@@ -55,9 +55,9 @@ int SetNonBlocking(Jim_Interp *interp, const char *cmd, int fd) {
 }
 
 static int ApexCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
-  static int to_bc[2] = {0};
-  static int from_bc[2] = {0};
-  static int err_bc[2] = {0};
+  static int to_bc[2] = {-1, -1};
+  static int from_bc[2] = {-1, -1};
+  static int err_bc[2] = {-1, -1};
   static int bc_active = 0;
   static char output[BUF_SZ];
   static char error[ERR_BUF_SZ];
@@ -93,17 +93,20 @@ static int ApexCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
       dup2(to_bc[0], STDIN_FILENO);
       dup2(from_bc[1], STDOUT_FILENO);
       dup2(err_bc[1], STDERR_FILENO);
-      close(to_bc[0]); close(to_bc[1]);
-      close(from_bc[0]); close(from_bc[1]);
-      close(err_bc[0]); close(err_bc[1]);
+      if (to_bc[0] >= 0) { close(to_bc[0]); to_bc[0] = -1; }
+      if (to_bc[1] >= 0) { close(to_bc[1]); to_bc[1] = -1; }
+      if (from_bc[0] >= 0) { close(from_bc[0]); from_bc[0] = -1; }
+      if (from_bc[1] >= 0) { close(from_bc[1]); from_bc[1] = -1; }
+      if (err_bc[0] >= 0) { close(err_bc[0]); err_bc[0] = -1; }
+      if (err_bc[1] >= 0) { close(err_bc[1]); err_bc[1] = -1; }
       execlp("bc", "bc", "-lLq", NULL);
       /* should not get here */
       exit(1);
     }
     /* parent process */
-    close(to_bc[0]);
-    close(from_bc[1]);
-    close(err_bc[1]);
+    if (to_bc[0] >= 0) { close(to_bc[0]); to_bc[0] = -1; }
+    if (from_bc[1] >= 0) { close(from_bc[1]); from_bc[1] = -1; }
+    if (err_bc[1] >= 0) { close(err_bc[1]); err_bc[1] = -1; }
     SetNonBlocking(interp, cmd, to_bc[1]);
     SetNonBlocking(interp, cmd, from_bc[0]);
     SetNonBlocking(interp, cmd, err_bc[0]);
@@ -168,9 +171,9 @@ static int ApexCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     goto MATH_CLOSE;
   }
 MATH_CLOSE:
-  close(to_bc[1]);
-  close(from_bc[0]);
-  close(err_bc[0]);
+  if (to_bc[1] >= 0) { close(to_bc[1]); to_bc[1] = -1; }
+  if (from_bc[0] >= 0) { close(from_bc[0]); from_bc[0] = -1; }
+  if (err_bc[0] >= 0) { close(err_bc[0]); err_bc[0] = -1; }
   waitpid(pid, NULL, 0);
   pid = 0;
   bc_active = 0;
