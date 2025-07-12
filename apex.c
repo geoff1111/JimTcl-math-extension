@@ -83,7 +83,7 @@ static int ApexCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
       Jim_SetResultFormatted(interp, "%s: pipe fail", cmd);
       return JIM_ERR;	
     }
-    pid_t pid = fork();
+    pid = fork();
     if (pid == -1) {
       Jim_SetResultFormatted(interp, "%s: fork fail", cmd);
       goto MATH_CLOSE;	
@@ -156,9 +156,7 @@ static int ApexCmd(Jim_Interp *interp, int argc, Jim_Obj *const *argv) {
     argk[1] = Jim_NewStringObj(interp, "trimright", -1);
     argk[2] = result;
     argk[3] = Jim_NewStringObj(interp, "\n@", -1);
-    Jim_EvalObjVector(interp, 4, argk);
-    Jim_SetResult(interp, result);
-    return JIM_OK;
+    return Jim_EvalObjVector(interp, 4, argk);
   }
   ssize_t e = read(err_bc[0], error, ERR_BUF_SZ-1);
   if (e > 0) {
