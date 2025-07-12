@@ -93,7 +93,7 @@ apex {
 }
 
 # Call the function with some example inputs
-puts "20! = [apex {scale = 1000; fact(20)}]"
+puts "20! = [apex {fact(20)}]"
 puts "40! = [apex {fact(40)}]"
 
 # Output: 2433902008176640000
