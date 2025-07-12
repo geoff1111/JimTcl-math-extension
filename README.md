@@ -1,6 +1,6 @@
 # Apex: Arbitrary Precision Expressions for JimTcl
 
-**Apex** is a JimTcl extension that integrates [Gavin Howard’s `bc`](https://github.com/gavinhoward/bc) for arbitrary precision arithmetic directly within the JimTcl scripting environment.
+**Apex** is a JimTcl extension that integrates [Gavin Howard’s `bc`](https://github.com/gavinhoward/bc) for arbitrary precision arithmetic directly within the JimTcl scripting environment. It is not thread safe.
 
 It allows developers to evaluate numeric expressions—including floating-point and high-precision math—by communicating with a `bc` subprocess, safely and interactively.
 
